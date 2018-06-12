@@ -417,6 +417,8 @@ class CardStack extends React.Component {
       this._getTransitionConfig().containerStyle,
     ];
 
+    const hasReNavigate = this._hasScenesReNavigate(scenes);
+
     return (
       <View {...handlers} style={containerStyle}>
         <View style={styles.scenes}>
