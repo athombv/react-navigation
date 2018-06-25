@@ -46,10 +46,14 @@ export default (routeConfigMap, stackConfig = {}) => {
         cardStyle={cardStyle}
         transitionConfig={transitionConfig}
         onTransitionStart={onTransitionStart}
-        onTransitionEnd={(lastTransition, transition) => {
-          const { state, dispatch } = props.navigation;
-          dispatch(NavigationActions.completeTransition({ key: state.key }));
-          onTransitionEnd && onTransitionEnd(lastTransition, transition);
+        onTransitionEnd={(transition, lastTransition) => {
+          const {state, dispatch} = props.navigation;
+
+          if (transition.navigation.state.isTransitioning) {
+            dispatch(NavigationActions.completeTransition({key: state.key}));
+          }
+
+          onTransitionEnd && onTransitionEnd(transition, lastTransition);
         }}
       />
     )

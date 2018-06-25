@@ -84,7 +84,7 @@ class CardStack extends React.Component {
 
   _childEventSubscribers = {};
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     if (props.screenProps !== this.props.screenProps) {
       this._screenDetails = {};
     }
@@ -110,13 +110,21 @@ class CardStack extends React.Component {
   }
 
   _isRouteFocused = route => {
-    const { state } = this.props.navigation;
+    const {
+      transitionProps: {
+        navigation: { state },
+      },
+    } = this.props;
     const focusedRoute = state.routes[state.index];
     return route === focusedRoute;
   };
 
   _getScreenDetails = scene => {
-    const { screenProps, transitionProps: { navigation }, router } = this.props;
+    const {
+      screenProps,
+      transitionProps: { navigation },
+      router,
+    } = this.props;
     let screenDetails = this._screenDetails[scene.key];
     if (!screenDetails || screenDetails.state !== scene.route) {
       if (!this._childEventSubscribers[scene.route.key]) {
@@ -129,7 +137,7 @@ class CardStack extends React.Component {
       const screenNavigation = addNavigationHelpers({
         dispatch: navigation.dispatch,
         state: scene.route,
-        isFocused: this._isRouteFocused.bind(this, scene.route),
+        isFocused: () => this._isRouteFocused(scene.route),
         addListener: this._childEventSubscribers[scene.route.key],
       });
       screenDetails = {
@@ -409,14 +417,32 @@ class CardStack extends React.Component {
       this._getTransitionConfig().containerStyle,
     ];
 
+    const hasReNavigate = this._hasScenesReNavigate(scenes);
+
     return (
       <View {...handlers} style={containerStyle}>
         <View style={styles.scenes}>
-          {scenes.map(s => this._renderCard(s))}
+          {scenes
+            .filter(s => !(s.isStale && hasReNavigate))
+            .map(s => this._renderCard(s))}
         </View>
         {floatingHeader}
       </View>
     );
+  }
+
+  _hasScenesReNavigate(scenes) {
+    const scenesCount = scenes.length;
+    const doubleIndex =
+      scenesCount >= 2 &&
+      scenes[scenesCount - 1].index === scenes[scenesCount - 2].index;
+    let hasReNavigate = false;
+    if (doubleIndex) {
+      const route = scenes[scenesCount - 1].route;
+      const prevRoute = scenes[scenesCount - 2].route;
+      hasReNavigate = route.routeName === prevRoute.routeName;
+    }
+    return hasReNavigate;
   }
 
   _getHeaderMode() {

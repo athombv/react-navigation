@@ -101,6 +101,8 @@ class TabBarBottom extends React.PureComponent {
       return null;
     }
 
+    const horizontal = this._shouldUseHorizontalTabs();
+
     return (
       <TabBarIcon
         position={position}
@@ -109,11 +111,11 @@ class TabBarBottom extends React.PureComponent {
         inactiveTintColor={inactiveTintColor}
         renderIcon={renderIcon}
         scene={scene}
-        style={
-          showLabel && this._shouldUseHorizontalTabs()
-            ? styles.horizontalIcon
-            : styles.icon
-        }
+        style={[
+          styles.iconWithExplicitHeight,
+          showLabel === false && !horizontal && styles.iconWithoutLabel,
+          showLabel !== false && !horizontal && styles.iconWithLabel,
+        ]}
       />
     );
   };
@@ -135,7 +137,7 @@ class TabBarBottom extends React.PureComponent {
         maxTabBarItemWidth = flattenedTabStyle.width;
       } else if (
         typeof flattenedTabStyle.width === 'string' &&
-        flattenedTabStyle.endsWith('%')
+        flattenedTabStyle.width.endsWith('%')
       ) {
         const width = parseFloat(flattenedTabStyle.width);
         if (Number.isFinite(width)) {
@@ -145,7 +147,7 @@ class TabBarBottom extends React.PureComponent {
         maxTabBarItemWidth = flattenedTabStyle.maxWidth;
       } else if (
         typeof flattenedTabStyle.maxWidth === 'string' &&
-        flattenedTabStyle.endsWith('%')
+        flattenedTabStyle.width.endsWith('%')
       ) {
         const width = parseFloat(flattenedTabStyle.maxWidth);
         if (Number.isFinite(width)) {
@@ -319,10 +321,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
   },
-  icon: {
-    flexGrow: 1,
+  iconWithoutLabel: {
+    flex: 1,
   },
-  horizontalIcon: {
+  iconWithLabel: {
+    flex: 1,
+  },
+  iconWithExplicitHeight: {
     height: Platform.isPad ? DEFAULT_HEIGHT : COMPACT_HEIGHT,
   },
   label: {
