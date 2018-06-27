@@ -472,8 +472,8 @@ class CardStack extends React.Component {
 
   _renderInnerScene(SceneComponent, scene) {
     const { navigation } = this._getScreenDetails(scene);
-    const { screenProps = {} } = this.props;
-    screenProps.position = this.props.transitionProps.position;
+    const { screenProps } = this.props;
+    navigation.position = this.props.transitionProps.position;
     const headerMode = this._getHeaderMode();
     if (headerMode === 'screen') {
       return (
