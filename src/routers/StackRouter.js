@@ -24,6 +24,43 @@ function behavesLikePushAction(action) {
   );
 }
 
+function findRouteAndUpdatePath(action, routes) {
+  let found = false;
+
+  for (let i = 0; i < routes.length; i++) {
+    const route = routes[i];
+
+    let result = null;
+
+    if (route.routes) {
+      result = findRouteAndUpdatePath(action, route.routes);
+      found = result.found;
+    }
+
+    if (found) {
+      routes = routes.slice();
+      routes[i] = { ...route };
+      routes[i].routes = result.routes;
+      return { found, routes };
+    }
+
+    if (route.key === action.key) {
+      routes = routes.slice();
+
+      const params = {
+        ...route.params,
+        ...action.params,
+      };
+
+      routes[i] = { ...route, params };
+      found = true;
+      break;
+    }
+  }
+
+  return { found, routes };
+}
+
 export default (routeConfigs, stackConfig = {}) => {
   // Fail fast on invalid route definitions
   validateRouteConfigMap(routeConfigs);
@@ -367,22 +404,10 @@ export default (routeConfigs, stackConfig = {}) => {
       }
 
       if (action.type === NavigationActions.SET_PARAMS) {
-        const key = action.key;
-        const lastRoute = state.routes.find(route => route.key === key);
-        if (lastRoute) {
-          const params = {
-            ...lastRoute.params,
-            ...action.params,
-          };
-          const routes = [...state.routes];
-          routes[state.routes.indexOf(lastRoute)] = {
-            ...lastRoute,
-            params,
-          };
-          return {
-            ...state,
-            routes,
-          };
+        const result = findRouteAndUpdatePath(action, state.routes);
+
+        if (result.found) {
+          return { ...state, routes: result.routes };
         }
       }
 
