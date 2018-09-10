@@ -20,11 +20,14 @@ import withOrientation from '../withOrientation';
 
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
-const TITLE_OFFSET = Platform.OS === 'ios' ? 70 : 56;
+const TITLE_OFFSET_LEFT = Platform.OS === 'ios' ? 70 : 56;
+const TITLE_OFFSET_RIGHT = Platform.OS === 'ios' ? 70 : 72;
 
 const getAppBarHeight = isLandscape => {
   return Platform.OS === 'ios'
-    ? isLandscape && !Platform.isPad ? 32 : 44
+    ? isLandscape && !Platform.isPad
+      ? 32
+      : 44
     : 56;
 };
 
@@ -555,8 +558,8 @@ const styles = StyleSheet.create({
   title: {
     bottom: 0,
     top: 0,
-    left: TITLE_OFFSET,
-    right: TITLE_OFFSET,
+    left: TITLE_OFFSET_LEFT,
+    right: TITLE_OFFSET_RIGHT,
     position: 'absolute',
     alignItems: 'center',
     flexDirection: 'row',
