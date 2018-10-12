@@ -431,6 +431,7 @@ class CardStack extends React.Component {
     );
   }
 
+  // TODO here is the error from with double navigation
   _hasScenesReNavigate(scenes) {
     const scenesCount = scenes.length;
     const doubleIndex =
@@ -438,9 +439,15 @@ class CardStack extends React.Component {
       scenes[scenesCount - 1].index === scenes[scenesCount - 2].index;
     let hasReNavigate = false;
     if (doubleIndex) {
-      const route = scenes[scenesCount - 1].route;
-      const prevRoute = scenes[scenesCount - 2].route;
-      hasReNavigate = route.routeName === prevRoute.routeName;
+      // To manny scenes
+      if (scenesCount > 2) {
+        hasReNavigate = true;
+      } else {
+        const route = scenes[scenesCount - 1].route;
+        const prevRoute = scenes[scenesCount - 2].route;
+
+        hasReNavigate = route.routeName === prevRoute.routeName;
+      }
     }
     return hasReNavigate;
   }
