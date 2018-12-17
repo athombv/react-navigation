@@ -21,7 +21,7 @@ import withOrientation from '../withOrientation';
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 const TITLE_OFFSET_LEFT = Platform.OS === 'ios' ? 70 : 56;
-const TITLE_OFFSET_RIGHT = Platform.OS === 'ios' ? 70 : 72;
+const TITLE_OFFSET_RIGHT = Platform.OS === 'ios' ? 70 : 56;
 
 const getAppBarHeight = isLandscape => {
   return Platform.OS === 'ios'
