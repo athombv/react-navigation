@@ -481,6 +481,7 @@ class CardStack extends React.Component {
     const { navigation } = this._getScreenDetails(scene);
     const { screenProps } = this.props;
     navigation.position = this.props.transitionProps.position;
+    navigation.positionIndex = this.props.transitionProps.index;
     const headerMode = this._getHeaderMode();
     if (headerMode === 'screen') {
       return (
